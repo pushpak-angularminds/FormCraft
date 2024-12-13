@@ -80,9 +80,9 @@ export default function ViewForm() {
     if (!validateForm(questions)) return; // Stop submission if validation fails
     try {
       const ansArr = questions.map((item) => {
-        return { question: item.question, answer: item.answer}
+        return { question: item.question, answer: item.answer }
       })
-      const payload = { formId: formData._id, answers: ansArr, version: formData?.version};
+      const payload = { formId: formData._id, answers: ansArr, version: formData?.version };
       console.log('Submitting form data:', ansArr);
 
       const response = await axios.post("http://localhost:3000/form-response", payload, {
@@ -124,6 +124,21 @@ export default function ViewForm() {
           />
         );
 
+      case 'radio':
+        return (
+          <RadioGroup
+            value={question.answer}
+            onValueChange={(value) => handleAnswer(index, value)}
+          >
+            {question.options.map((option, optionIndex) => (
+              <div key={optionIndex} className="flex items-center space-x-2">
+                <RadioGroupItem value={option} id={`q${index}-option-${optionIndex}`} />
+                <Label htmlFor={`q${index}-option-${optionIndex}`}>{option}</Label>
+              </div>
+            ))}
+          </RadioGroup>
+        );
+
       case 'checkbox':
         return (
           <div className="space-y-2">
@@ -156,20 +171,7 @@ export default function ViewForm() {
           </div>
         );
 
-      case 'radio':
-        return (
-          <RadioGroup
-            value={question.answer}
-            onValueChange={(value) => handleAnswer(index, value)}
-          >
-            {question.options.map((option, optionIndex) => (
-              <div key={optionIndex} className="flex items-center space-x-2">
-                <RadioGroupItem value={option} id={`q${index}-option-${optionIndex}`} />
-                <Label htmlFor={`q${index}-option-${optionIndex}`}>{option}</Label>
-              </div>
-            ))}
-          </RadioGroup>
-        );
+
 
       case 'fileUpload':
         return (

@@ -1,9 +1,10 @@
 import React from 'react'
 import { Card, CardContent } from './ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@radix-ui/react-select'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+
 import { Input } from './ui/input'
-import { Switch } from '@radix-ui/react-switch'
-import { Tally1, Trash2 } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
+import { GripVertical, Tally1, Trash2 } from 'lucide-react'
 import { useDrag, useDrop } from 'react-dnd'
 
 const questionTypes = [
@@ -43,25 +44,30 @@ const EditQuestionCard = ({ index, question, updateQuestion, deleteQuestion, mov
     })
 
     return (
-        
+
         <Card
             ref={(node) => drag(drop(node))}
             className={`mb-4 py-4 ${isDragging ? 'opacity-50' : ''}`}>
             <CardContent className="space-y-4">
-                <Select
-                    value={question?.type}
-                    onValueChange={(value) => updateQuestion(index, 'type', value)}>
-                    <SelectTrigger>
-                        <SelectValue placeholder="Select question type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {questionTypes?.map((type) => (
-                            <SelectItem key={type?.value} value={type?.value}>
-                                {type?.label}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                <div className="flex items-center justify-between">
+                    <div className="cursor-move">
+                        <GripVertical size={24} />
+                    </div>
+                    <Select
+                        value={question?.type}
+                        onValueChange={(value) => updateQuestion(index, 'type', value)}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select question type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {questionTypes?.map((type) => (
+                                <SelectItem key={type?.value} value={type?.value}>
+                                    {type?.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
                 <Input
                     placeholder="Question"
                     value={question?.question}

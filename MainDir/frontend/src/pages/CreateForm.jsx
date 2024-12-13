@@ -18,8 +18,8 @@ import { validateForm } from '@/utils/ValidateCreateForm'
 const questionTypes = [
   { value: 'text', label: 'Text' },
   { value: 'checkbox', label: 'Checkbox' },
-  { value: 'multipleChoice', label: 'Multiple Choice' },
   { value: 'radio', label: 'Radio Button' },
+  { value: 'multipleChoice', label: 'Multiple Choice' },
   { value: 'fileUpload', label: 'File Upload' },
   { value: 'dropdown', label: 'Dropdown' },
   { value: 'date', label: 'Date' },
@@ -33,7 +33,8 @@ const QuestionCard = ({ question, index, moveQuestion, updateQuestion, deleteQue
       isDragging: monitor.isDragging(),
     }),
   })
-
+  
+  console.log('question', question)
   const [, drop] = useDrop({
     accept: 'QUESTION',
     hover(item, monitor) {
