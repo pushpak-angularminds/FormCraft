@@ -78,6 +78,13 @@ const Dashboard = () => {
     navigate('/sign-in');
   };
 
+  useEffect(()=>{
+    const userId = localStorage.getItem('userId')
+    if(!userId){
+      navigate('/sign-in')
+    }
+  })
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">

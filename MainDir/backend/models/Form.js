@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 
 
 const questionTypes = [
-  'text',          // Text input
-  'checkbox',      // Checkbox input
-  'multipleChoice',// Multiple Choice
-  'radio',         // Radio Button
-  'fileUpload',    // File Upload
+  'text',          
+  'checkbox',      
+  'multipleChoice',
+  'radio',         
+  'fileUpload',    
   'dropdown',      // Dropdown input
   'date',          // Date input
 ];
