@@ -1,33 +1,3 @@
-// const multer = require('multer')
-// const fs = require('fs');
-// const path = require('path');
-// const uploadDir = path.join(__dirname, 'my-uploads');
-
-// console.log('uploadDir-->', uploadDir)
-
-// // Ensure the upload directory exists
-// if (!fs.existsSync(uploadDir)) {
-//     fs.mkdirSync(uploadDir, { recursive: true });
-// }
-
-// // Define storage with custom filename function
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, 'middlewares/my-uploads'); // Destination folder for uploads
-//     },
-//     filename: (req, file, cb) => {
-//         // Extract the original file extension
-//         const ext = path.extname(file.originalname);
-
-//         // Create a filename that includes the original extension
-//         cb(null, `${file.fieldname}-${Date.now()}${ext}`);
-//     }
-// });
-
-// const upload = multer({ storage: storage })
-// module.exports = { upload };
-
-
 const multer = require('multer');
 const fs = require('fs');
 const path = require('path');

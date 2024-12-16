@@ -3,8 +3,7 @@
 const mongoose = require("mongoose");
 
 function connectDB() {
-    const url = "mongodb+srv://2017pushpakbhoite:Pushpak%40123@pushpakclusture-3.zy7cn.mongodb.net/formify";
-
+    const url = process.env.MONGO_URL;
     try {
         mongoose.connect(url, {
             useNewUrlParser: true,
