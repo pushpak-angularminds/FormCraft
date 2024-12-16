@@ -276,8 +276,8 @@ export default function EditForm() {
     return (
         <DndProvider backend={HTML5Backend}>
 
-            <div className='w-screen min-h-screen pt-5 bg-blue-50'>
-                <div className='flex md:w-3/5 mx-auto mb-3 space-x-2 mb-4'>
+            <div className='w-screen min-h-screen pt-5 bg-blue-50 dark:bg-black'>
+                <div className='flex md:w-3/5 mx-auto mb-3 space-x-2 '>
                     <Input value={formLink} readOnly placeholder="Generated URL will appear here" />
                     <Button onClick={copyToClipboard} disabled={!formLink}>
                         <Copy className="mr-2 h-4 w-4" />

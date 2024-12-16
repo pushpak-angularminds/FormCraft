@@ -11,5 +11,4 @@ Currently, two official plugins are available:
 
 <!--------------------------------------------------------- -->
 image, multiple-inputs, date-format 
-
-Work on dashboard, dark & light theme 
+Change the way of generating url 

@@ -6,7 +6,7 @@ import { FormInput, ClipboardList, BarChart } from 'lucide-react'
 
 const Home = () => {
     return (
-        <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white">
+        <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white  dark:from-gray-900 dark:to-black">
             <header className="container mx-auto px-4 py-6 flex justify-between items-center">
                 <h1 className="text-2xl font-bold text-blue-600">FormCraft</h1>
                 <nav>

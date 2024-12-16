@@ -78,27 +78,60 @@ export default function ViewForm() {
 
   const saveForm = async () => {
     if (!validateForm(questions)) return; // Stop submission if validation fails
-    try {
-      const ansArr = questions.map((item) => {
-        return { question: item.question, answer: item.answer }
-      })
-      const payload = { formId: formData._id, answers: ansArr, version: formData?.version };
-      console.log('Submitting form data:', ansArr);
 
-      const response = await axios.post("http://localhost:3000/form-response", payload, {
-        // formData, headers: {
-        //     'Content-type': "multipart/form-data"
-        // }
+    try {
+      const formDataToSend = new FormData();
+
+      // Append formId and version
+      formDataToSend.append("formId", formData._id);
+      formDataToSend.append("version", formData?.version);
+
+      questions.forEach((item, index) => {
+        if (Array.isArray(item.answer)) {
+          // If the answer is an array (for multiple answers)
+          item.answer.forEach((answerItem, answerIndex) => {
+            if (answerItem instanceof File) {
+              // If the answer is a file, append it to the FormData
+              formDataToSend.append(`answers[${index}][answer][${answerIndex}]`, answerItem);
+            } else {
+              // If the answer is a string, append it as text
+              formDataToSend.append(`answers[${index}][answer][${answerIndex}]`, answerItem);
+            }
+          });
+        } else if (item.answer instanceof File) {
+          // If the answer is a single file, append it as a file
+          formDataToSend.append(`answers[${index}][answer]`, item.answer);
+        } else {
+          // For single text answers
+          formDataToSend.append(`answers[${index}][answer]`, item.answer);
+        }
+
+        // Append the question text as well
+        formDataToSend.append(`answers[${index}][question]`, item.question);
       });
+
+      console.log('Submitting form data:',formDataToSend.entries());
+      for (let [key, value] of formDataToSend.entries()) {
+        console.log(key, value);
+      }
+      formDataToSend.entries()?.map((item)=>{
+        console.log('item', item?.version)
+      })
+      
+
+      // Send the request with FormData (no need to set Content-Type manually)
+      const response = await axios.post("http://localhost:3000/form-response", formDataToSend);
+
       console.log('response', response?.data?.form?._id);
+
       if (response.status === 201) {
         toast({
-          title: "Form Submited Successfully",
+          title: "Form Submitted Successfully",
           description: "Your form has been saved.",
         });
 
         // Reset form after successful save
-        setFormTitle('Your responce has been saved ');
+        setFormTitle('Your response has been saved');
         setQuestions([]);
       }
     } catch (error) {
@@ -110,6 +143,44 @@ export default function ViewForm() {
       });
     }
   };
+
+
+
+
+  // const saveForm = async () => {
+  //   if (!validateForm(questions)) return; // Stop submission if validation fails
+  //   try {
+  //     const ansArr = questions.map((item) => {
+  //       return { question: item.question, answer: item.answer }
+  //     })
+  //     const payload = { formId: formData._id, answers: ansArr, version: formData?.version };
+  //     console.log('Submitting form data:', ansArr);
+
+  //     const response = await axios.post("http://localhost:3000/form-response", payload, {
+  //       formData, headers: {
+  //           'Content-type': "multipart/form-data"
+  //       } 
+  //     });
+  //     console.log('response', response?.data?.form?._id);
+  //     if (response.status === 201) {
+  //       toast({
+  //         title: "Form Submited Successfully",
+  //         description: "Your form has been saved.",
+  //       });
+
+  //       // Reset form after successful save
+  //       setFormTitle('Your responce has been saved ');
+  //       setQuestions([]);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error saving form:', error);
+  //     toast({
+  //       title: "Error",
+  //       description: "There was a problem saving your form.",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
 
   console.log('questions ->', questions)
 
@@ -177,7 +248,7 @@ export default function ViewForm() {
         return (
           <Input
             type="file"
-            onChange={(e) => handleAnswer(index, e.target.files[0]?.name)}
+            onChange={(e) => handleAnswer(index, e.target.files[0])}
           />
         );
 
@@ -212,11 +283,11 @@ export default function ViewForm() {
 
 
   return (
-    <div className='w-screen min-h-screen pt-5 bg-blue-50'>
+    <div className='w-screen min-h-screen pt-5 bg-blue-50 dark:bg-black '>
       <div className="container md:w-3/5 mx-auto p-4 rounded-md">
 
         <h1 className="text-4xl font-bold mb-4 text-center"  >{formTitle}</h1>
-        <p className='text-muted underline text-center'>{questions.length > 0 && formData?.description}</p>
+        <p className='text-muted underline text-center dark:text-white'>{questions.length > 0 && formData?.description}</p>
 
         <div className="mt-6">
           <h2 className="text-xl font-semibold mb-2 ">{questions.length > 0 && 'Questions'} </h2>
