@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+      
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -30,8 +30,14 @@ jobs:
         run: |
           cd MainDir/frontend
           npm install
-          npm run build 
+
+      - name: Build
+        run: |
+          npm run build
           # Adjust the base-href with your actual repo path
+          echo "BASE_URL = '/FormCraft/MainDir/frontend/'" >> .env.production
+          npm run build -- --base=/FormCraft/MainDir/frontend/
+          # Now the `index.html` will reference assets correctly
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -50,3 +56,21 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
