@@ -17,7 +17,7 @@ function App() {
   return (
     <>
     <ThemeProvider>
-      <BrowserRouter basename="/FormCraft/MainDir/frontend">
+      <BrowserRouter >
         <div>
           <Routes>
             <Route path="/" element={<Home />} />
