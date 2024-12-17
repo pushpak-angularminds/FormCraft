@@ -3,10 +3,21 @@ name: Deploy Vite React App to GitHub Pages
 on:
   push:
     branches:
-      - main # Trigger the workflow on pushes to the main branch
+      - main  # Trigger the workflow on pushes to the main branch
+
+  workflow_dispatch:  # Allow manual triggering of the workflow
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -16,7 +27,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '18'
 
       - name: Install Dependencies
         working-directory: MainDir/frontend
@@ -24,10 +35,23 @@ jobs:
 
       - name: Build the Project
         working-directory: MainDir/frontend
-        run: npm run build
+        run: npm run build -- --outDir dist --base /FormCraft/
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload Artifact (dist folder)
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GH_TOKEN }} # Use your secret token here
-          publish_dir: MainDir/frontend/dist
+          path: MainDir/frontend/dist  # Path to your build output folder
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token to authenticate the deployment
