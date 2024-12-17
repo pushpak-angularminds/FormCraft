@@ -28,6 +28,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          cd MainDir/frontend
           npm install
           npm run build -- --output-path=docs --base-href=/FormCraft/MainDir/frontend/
           # Adjust the base-href with your actual repo path
