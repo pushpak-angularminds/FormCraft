@@ -1,0 +1,53 @@
+name: Deploy Vite React App to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # Change to the branch you want to deploy from
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment with Node.js 20
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'  # Ensure Node.js 20 is used
+    
+      # Verify Node.js version for debugging
+      - name: Verify Node.js version
+        run: node -v  # Ensure Node.js 20 is being used
+
+      # Step 3: Navigate to the frontend directory and install dependencies
+      - name: Install dependencies
+        run: |
+          cd MainDir/frontend
+          npm install
+
+      # Step 4: Build the project
+      - name: Build the project
+        run: |
+          cd MainDir/frontend
+          npm run build
+
+      # Step 5: Set up Git user for deployment
+      - name: Set up Git user
+        run: |
+          git config --global user.email "pushpak@angularminds.in"
+          git config --global user.name "pushpak-angularminds"
+          git config --global url."https://your-username:${{ secrets.GH_TOKEN }}@github.com".insteadOf "https://github.com"
+      
+      # Step 6: Install gh-pages and deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        run: |
+          cd MainDir/frontend
+          npm install --save-dev gh-pages
+          npm run deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
