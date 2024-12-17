@@ -33,6 +33,7 @@ jobs:
 
       - name: Build
         run: |
+          cd MainDir/frontend
           npm run build
           # Adjust the base-href with your actual repo path
           echo "BASE_URL = '/FormCraft/MainDir/frontend/'" >> .env.production
