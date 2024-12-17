@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main  # Trigger the workflow on pushes to the main branch
-
   workflow_dispatch:  # Allow manual triggering of the workflow
 
 permissions:
@@ -54,4 +53,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token to authenticate the deployment
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GitHub token to authenticate the deployment
