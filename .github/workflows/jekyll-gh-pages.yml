@@ -20,17 +20,26 @@ jobs:
         with:
           node-version: '16'  # Specify the Node.js version you want to use
 
-      # Step 3: Install dependencies
+      # Step 3: Navigate to the frontend directory
+      - name: Change directory to frontend
+        run: cd MainDir/frontend
+
+      # Step 4: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd MainDir/frontend
+          npm install
 
-      # Step 4: Build the project
+      # Step 5: Build the project
       - name: Build the project
-        run: npm run build
+        run: |
+          cd MainDir/frontend
+          npm run build
 
-      # Step 5: Deploy to GitHub Pages using the 'gh-pages' branch
+      # Step 6: Deploy to GitHub Pages using the 'gh-pages' branch
       - name: Deploy to GitHub Pages
         run: |
+          cd MainDir/frontend
           npm install --save-dev gh-pages
           npm run deploy
         env:
