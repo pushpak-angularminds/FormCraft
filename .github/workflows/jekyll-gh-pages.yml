@@ -14,11 +14,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js environment
+      # Step 2: Set up Node.js environment (upgrade Node.js version)
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Specify the Node.js version you want to use
+          node-version: '16'  # Set this to '16' or '17' for compatibility with structuredClone
 
       # Step 3: Navigate to the frontend directory
       - name: Change directory to frontend
