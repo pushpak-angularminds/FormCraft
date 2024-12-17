@@ -3,7 +3,7 @@ name: Deploy Vite React App to GitHub Pages
 on:
   push:
     branches:
-      - main  # Set the branch from which to deploy (usually 'main' or 'master')
+      - main  # Change to the branch you want to deploy from
 
 jobs:
   build:
@@ -14,11 +14,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js environment (upgrade Node.js version)
-      - name: Set up Node.js
+      # Step 2: Set up Node.js environment with Node.js 20
+      - name: Set up Node.js 20
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Set this to '16' or '17' for compatibility with structuredClone
+          node-version: '20'  # Ensure Node.js 20 is used
+    
+      # Verify Node.js version for debugging
+      - name: Verify Node.js version
+        run: node -v  # Ensure Node.js 20 is being used
 
       # Step 3: Navigate to the frontend directory
       - name: Change directory to frontend
@@ -36,7 +40,7 @@ jobs:
           cd MainDir/frontend
           npm run build
 
-      # Step 6: Deploy to GitHub Pages using the 'gh-pages' branch
+      # Step 6: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         run: |
           cd MainDir/frontend
