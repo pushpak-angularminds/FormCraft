@@ -12,11 +12,14 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          # Allow the workflow to fetch the entire history of the repository
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
 
       - name: Install Dependencies
         working-directory: MainDir/frontend
@@ -31,3 +34,6 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}  # Use your secret token here
           publish_dir: MainDir/frontend/dist
+          # Add the following options for a clean deployment
+          user_name: 'github-actions[bot]'  # Default bot name
+          user_email: 'github-actions[bot]@users.noreply.github.com'  # Default bot email
