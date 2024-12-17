@@ -56,7 +56,7 @@ const EditQuestionCard = ({ index, question, updateQuestion, deleteQuestion, mov
                     <Select
                         value={question?.type}
                         onValueChange={(value) => updateQuestion(index, 'type', value)}>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Select question type" />
                         </SelectTrigger>
                         <SelectContent>

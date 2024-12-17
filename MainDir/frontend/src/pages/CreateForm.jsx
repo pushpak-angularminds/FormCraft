@@ -159,7 +159,7 @@ export default function FormCreator() {
     try {
       const formData = { title: formTitle, description: formDescription, questions }
       formData.adminId = localStorage.getItem('userId')
-      const response = await axios.post("http://localhost:3000/create-form", formData)
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/create-form`, formData)
       setFormLink(`http://localhost:5173/forms/${response?.data?.form?._id}`)
       if (response.status === 201) {
         toast({

@@ -33,7 +33,7 @@ export default function SignupForm() {
       // This is where you would typically make an API call
       // For demonstration, we're just logging the data and showing a success message
       console.log('Submitting form data:', formData)
-      const response = await axios.post("http://localhost:3000/auth/sign-up", formData);
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`, formData);
       console.log('response', response);
       // Simulating an API call
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -49,7 +49,7 @@ export default function SignupForm() {
       console.error('Error submitting form:', error)
       toast({
         title: "Error",
-        description: "There was a problem creating your account.",
+        description: error?.response?.data?.error || "There was a problem creating your account.",
         variant: "destructive",
       })
     }

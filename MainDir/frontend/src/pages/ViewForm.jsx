@@ -22,7 +22,7 @@ export default function ViewForm() {
   useEffect(() => {
     async function getFormData() {
       try {
-        const response = await axios.get(`http://localhost:3000/forms/${param?.formId}`);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/forms/${param?.formId}`);
         setFormData(response?.data?.form);
         setFormTitle(response?.data?.form?.title)
 
@@ -120,7 +120,7 @@ export default function ViewForm() {
       
 
       // Send the request with FormData (no need to set Content-Type manually)
-      const response = await axios.post("http://localhost:3000/form-response", formDataToSend);
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/form-response`, formDataToSend);
 
       console.log('response', response?.data?.form?._id);
 

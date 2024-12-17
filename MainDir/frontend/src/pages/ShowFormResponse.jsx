@@ -107,7 +107,7 @@ export default function ShowFormResponses() {
     useEffect(() => {
         async function getUserForms() {
             try {
-                const response = await axios.get(`http://localhost:3000/show-responses/${formId}`)
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/show-responses/${formId}`)
                 setData(response?.data)
             } catch (error) {
                 console.error(error)

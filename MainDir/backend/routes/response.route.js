@@ -7,11 +7,6 @@ const multer = require('multer');
 const { upload, uploadToCloudinary } = require('../middlewares/multer.middleware');
 
 
-
-
-
-
-
 router.post('/form-response', upload.any(), async (req, res) => {
   try {
     console.log('req.body-->', req.body);

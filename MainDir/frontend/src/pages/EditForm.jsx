@@ -1,9 +1,4 @@
-// setQuestions((prevQuestions) => {
-//     const updatedQuestions = [...prevQuestions]
-//     const [reorderedItem] = updatedQuestions.splice(dragIndex, 1)
-//     updatedQuestions.splice(hoverIndex, 0, reorderedItem)
-//     return updatedQuestions
-// })
+
 import { useState, useEffect, useCallback } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -74,7 +69,7 @@ export default function EditForm() {
     useEffect(() => {
         const fetchFormData = async () => {
             try {
-                const response = await axios.get(`http://localhost:3000/forms/${formId}`)
+                const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/forms/${formId}`)
                 console.log('response', response)
                 const { title, description, questions } = response.data.form
                 setFormTitle(title)
@@ -132,11 +127,6 @@ export default function EditForm() {
     const moveQuestion = useCallback((dragIndex, hoverIndex) => {
         console.log('dragIndex', dragIndex)
         console.log('hoverIndex', hoverIndex)
-        // const allQuestions = [...questions];
-        // console.log('allQuestions', allQuestions)
-        // const getDraggedQuestion = allQuestions[dragIndex]
-        // console.log('getDraggedQuestion', getDraggedQuestion)
-        // allQuestions.splice(hoverIndex, 1, getDraggedQuestion)
         setQuestions((prev)=>{
             const getDragged = prev[dragIndex];
             let NewArr = [...prev]
@@ -153,7 +143,7 @@ export default function EditForm() {
         try {
             const formData = { title: formTitle, description: formDescription, questions }
             console.log('Updating form data:', formData)
-            const response = await axios.put(`http://localhost:3000/forms/${formId}`, formData)
+            const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/forms/${formId}`, formData)
             if (response.status === 200) {
                 toast({
                     title: "Form Updated Successfully",

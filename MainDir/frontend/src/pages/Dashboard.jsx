@@ -17,7 +17,7 @@ const Dashboard = () => {
   useEffect(() => {
     async function getUserForms() {
       try {
-        const response = await axios.get(`http://localhost:3000/user-forms/${userId}`);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user-forms/${userId}`);
         const rev = [...response?.data.forms].reverse();
         setRecentForms(rev);
       } catch (error) {
@@ -55,7 +55,7 @@ const Dashboard = () => {
     if (!window.confirm("Are you sure you want to delete this form?")) return;
   
     try {
-      await axios.delete(`http://localhost:3000/forms/${formId}`);
+      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/forms/${formId}`);
       toast({
         title: "Success",
         description: "Form deleted successfully!",
