@@ -24,29 +24,26 @@ jobs:
       - name: Verify Node.js version
         run: node -v  # Ensure Node.js 20 is being used
 
-      # Step 3: Navigate to the frontend directory
-      - name: Change directory to frontend
-        run: cd MainDir/frontend
-
-      # Step 4: Install dependencies
+      # Step 3: Navigate to the frontend directory and install dependencies
       - name: Install dependencies
         run: |
           cd MainDir/frontend
           npm install
 
-      # Step 5: Build the project
+      # Step 4: Build the project
       - name: Build the project
         run: |
           cd MainDir/frontend
           npm run build
 
-      # Step 6: Set up Git user
+      # Step 5: Set up Git user for deployment
       - name: Set up Git user
         run: |
           git config --global user.email "pushpak@angularminds.in"
           git config --global user.name "pushpak-angularminds"
-
-      # Step 7: Deploy to GitHub Pages
+          git config --global url."https://your-username:${{ secrets.GH_TOKEN }}@github.com".insteadOf "https://github.com"
+      
+      # Step 6: Install gh-pages and deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         run: |
           cd MainDir/frontend
