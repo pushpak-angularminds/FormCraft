@@ -1,53 +1,51 @@
-name: Deploy Vite React App to GitHub Pages
+name: Deploy React App to GitHub Pages
 
 on:
   push:
-    branches:
-      - main  # Change to the branch you want to deploy from
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      # Step 1: Checkout the repository
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js environment with Node.js 20
-      - name: Set up Node.js 20
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'  # Ensure Node.js 20 is used
-    
-      # Verify Node.js version for debugging
-      - name: Verify Node.js version
-        run: node -v  # Ensure Node.js 20 is being used
+          node-version: '18'
 
-      # Step 3: Navigate to the frontend directory and install dependencies
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
-          cd MainDir/frontend
           npm install
+          npm run build -- --output-path=docs --base-href=/FormCraft/MainDir/frontend/
+          # Adjust the base-href with your actual repo path
 
-      # Step 4: Build the project
-      - name: Build the project
-        run: |
-          cd MainDir/frontend
-          npm run build
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
 
-      # Step 5: Set up Git user for deployment
-      - name: Set up Git user
-        run: |
-          git config --global user.email "pushpak@angularminds.in"
-          git config --global user.name "pushpak-angularminds"
-          git config --global url."https://your-username:${{ secrets.GH_TOKEN }}@github.com".insteadOf "https://github.com"
-      
-      # Step 6: Install gh-pages and deploy to GitHub Pages
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy to GitHub Pages
-        run: |
-          cd MainDir/frontend
-          npm install --save-dev gh-pages
-          npm run deploy
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
