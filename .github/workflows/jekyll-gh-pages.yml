@@ -40,14 +40,16 @@ jobs:
           cd MainDir/frontend
           npm run build
 
-      # Step 6: Deploy to GitHub Pages
+      # Step 6: Set up Git user
+      - name: Set up Git user
+        run: |
+          git config --global user.email "pushpak@angularminds.in"
+          git config --global user.name "pushpak-angularminds"
+
+      # Step 7: Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         run: |
           cd MainDir/frontend
-          - name: Set up Git user
-         git config --global user.email "pushpak@angularminds.in"
-         git config --global user.name "pushpak-angularminds"
-
           npm install --save-dev gh-pages
           npm run deploy
         env:
