@@ -50,10 +50,10 @@ router.post('/form-response', upload.any(), async (req, res) => {
     // Save the response to the database (example)
     await Response.create({ formId, version, answers: processedAnswers });
 
-    res.status(201).json({ message: 'Form response submitted successfully' });
+    res.status(201).json({ success: true,  message: 'Form response submitted successfully' });
   } catch (error) {
     console.error('Error processing form response:', error);
-    res.status(500).json({ message: 'Internal server error', error: error.message });
+    res.status(500).json({ success: false,  message: 'Internal server error', error: error.message });
   }
 });
 

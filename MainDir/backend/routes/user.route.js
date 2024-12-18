@@ -12,13 +12,13 @@ router.post("/sign-up", async (req, res) => {
 
     // Validate input
     if (!name || !email || !password) {
-      return res.status(400).json({ error: "All fields are required." });
+      return res.status(400).json({ success: false, error: "All fields are required." });
     }
 
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "Email is already registered." });
+      return res.status(400).json({ success: false, error: "Email is already registered." });
     }
 
     // Hash the password
@@ -34,9 +34,9 @@ router.post("/sign-up", async (req, res) => {
 
     await newUser.save();
 
-    res.status(201).json({ message: "User registered successfully!" });
+    res.status(201).json({ success: true,  message: "User registered successfully!" });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred during registration." });
+    res.status(500).json({  success: false, error: "An error occurred during registration." });
   }
 });
 
@@ -47,26 +47,26 @@ router.post("/sign-in", async (req, res) => {
 
     // Validate input
     if (!email || !password) {
-      return res.status(400).json({ error: "Email and password are required." });
+      return res.status(400).json({ success: false,  error: "Email and password are required." });
     }
 
     // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ error: "Invalid email or password." });
+      return res.status(400).json({ success: false,  error: "Invalid email or password." });
     }
 
     // Compare the provided password with the hashed password in the database
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      return res.status(400).json({ error: "Invalid email or password." });
+      return res.status(400).json({ success: false,  error: "Invalid email or password." });
     }
 
     // Respond with user data (excluding the password)
     const { password: _, ...userData } = user.toObject(); // Remove password from the response
-    res.status(200).json({ message: "Sign-in successful!", user: userData });
+    res.status(200).json({ success: false,  message: "Sign-in successful!", user: userData });
   } catch (error) {
-    res.status(500).json({ error: "An error occurred during sign-in." });
+    res.status(500).json({  success: false, error: "An error occurred during sign-in." });
   }
 });
 

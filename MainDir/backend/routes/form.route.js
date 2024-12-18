@@ -17,7 +17,7 @@ router.post('/create-form', async (req, res) => {
 
     // Validate input
     if (!adminId || !title || !questions || !Array.isArray(questions) || questions.length === 0) {
-      return res.status(400).json({ error: 'Admin ID, title, and at least one field are required.' });
+      return res.status(400).json({ success: false, error: 'Admin ID, title, and at least one field are required.' });
     }
 
 
@@ -38,7 +38,7 @@ router.post('/create-form', async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating form:', error);
-    res.status(500).json({ error: 'An error occurred while creating the form.' });
+    res.status(500).json({ success: false, error: 'An error occurred while creating the form.' });
   }
 });
 
@@ -47,18 +47,18 @@ router.get('/forms/:formId', async (req, res) => {
   try {
     const form = await Form.findOne({ '_id': req?.params?.formId })
     if (!form) {
-      return res.status(404).json({ success: 'Failed', error: 'Form not found' });
+      return res.status(400).json({ success: false, error: 'Form not found' });
     }
     console.log('form', form)
     // Save the form to the database
 
     res.status(200).json({
-      message: 'Form fetched successfully!',
-      form,
+      success: false,
+      form
     });
   } catch (error) {
     console.error('Error fetching form:', error);
-    res.status(500).json({ error: 'Internal server error.' });
+    res.status(500).json({ success: false, error: 'Internal server error.' });
   }
 });
 
@@ -71,7 +71,7 @@ router.get(`/user-forms/:userId`, async (req, res) => {
     const id = new mongoose.Types.ObjectId(userId)
     const forms = await Form.find({ adminId: id });
     if (!forms || forms.length === 0) {
-      return res.status(404).json({ success: false, error: 'No forms found for this user' });
+      return res.status(400).json({ success: false, error: 'No forms found for this user' });
     }
     console.log('form', forms)
     res.status(200).json({
@@ -91,7 +91,7 @@ router.delete('/forms/:formId', async (req, res) => {
     // Check if the form exists
     const form = await Form.findById(formId);
     if (!form) {
-      return res.status(404).json({ success: false, error: 'Form not found.' });
+      return res.status(400).json({ success: false, error: 'Form not found.' });
     }
     // Delete associated responses
     await Response.deleteMany({ formId });
@@ -117,7 +117,7 @@ router.put('/forms/:formId', async (req, res) => {
     // Check if the form exists
     const form = await Form.findById(formId);
     if (!form) {
-      return res.status(404).json({ success: false, error: 'Form not found.' });
+      return res.status(400).json({ success: false, error: 'Form not found.' });
     }
 
     // Update form fields if provided in the request body
