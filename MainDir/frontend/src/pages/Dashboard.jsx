@@ -7,10 +7,13 @@ import axios from 'axios';
 import { toast } from '@/hooks/use-toast';
 import KebabMenu from '@/components/KebabMenu';
 import { useTheme } from '@/components/ThemeProvider';
+import { EmptyFormsState } from '@/components/EmptyFormsState';
+import { FormCardSkeleton } from '@/components/FormCardSkeleton';
 
 const Dashboard = () => {
   const { userId } = useParams();
   const [recentForms, setRecentForms] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
@@ -27,6 +30,8 @@ const Dashboard = () => {
           description: error?.response?.data?.error || "Failed to fetch user forms.",
           variant: "destructive",
         });
+      } finally {
+        setIsLoading(false);
       }
     }
     getUserForms();
@@ -53,7 +58,7 @@ const Dashboard = () => {
 
   const deleteForm = async (formId) => {
     if (!window.confirm("Are you sure you want to delete this form?")) return;
-  
+
     try {
       await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/forms/${formId}`);
       toast({
@@ -72,18 +77,16 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    // Implement your logout logic here
-    // For example:
     localStorage.removeItem('userId');
     navigate('/sign-in');
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     const userId = localStorage.getItem('userId')
-    if(!userId){
+    if (!userId) {
       navigate('/sign-in')
     }
-  })
+  }, [navigate])
 
   return (
     <div className="container mx-auto p-4">
@@ -99,50 +102,65 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="mb-8 flex">
-        <Link className="ml-auto w-full sm:w-auto" to={`/create-form`}>
-          <Button className="bg-blue-700 dark:bg-blue-600">
-            <PlusCircle className="mr-2 h-4 w-4" /> Create New Form
-          </Button>
-        </Link>
-      </div>
-
-      <div className="mb-6">
-        <h2 className="text-2xl font-semibold mb-4">Recent Forms</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {recentForms?.map((form) => (
-            <Card key={form._id} className="dark:bg-gray-800">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>{form.title}</CardTitle>
-                  <KebabMenu 
-                    onEdit={() => window.location.href = `/edit-form/${form._id}`}
-                    onDelete={() => deleteForm(form._id)}
-                  />
-                </div>
-                <CardDescription className="dark:text-gray-300">
-                  Last edited: {new Date(form.createdAt).toLocaleDateString()}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground dark:text-gray-400">
-                  Questions: {form?.questions?.length}
-                </p>
-              </CardContent>
-              <CardFooter className="flex justify-between">
-                <Button variant="outline" size="sm" onClick={() => copyLink(form?._id)}>
-                  <Copy className="mr-2 h-4 w-4" /> Copy Link
-                </Button>
-                <Link to={`/form-responses/${form?._id}`}>
-                  <Button variant="outline" size="sm">
-                    <BarChart2 className="mr-2 h-4 w-4" /> View Responses
-                  </Button>
-                </Link>
-              </CardFooter>
-            </Card>
-          ))}
+      {isLoading ? (
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold mb-4">Loading Recent Forms...</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[...Array(6)].map((_, index) => (
+              <FormCardSkeleton key={index} />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : recentForms.length === 0 ? (
+        <EmptyFormsState />
+      ) : (
+        <>
+          <div className="mb-8 flex">
+            <Link className="ml-auto w-full sm:w-auto" to={`/create-form`}>
+              <Button className="bg-blue-700 dark:bg-blue-600">
+                <PlusCircle className="mr-2 h-4 w-4" /> Create New Form
+              </Button>
+            </Link>
+          </div>
+
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold mb-4">Recent Forms : </h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {recentForms?.map((form) => (
+                <Card key={form._id} className="dark:bg-gray-800">
+                  <CardHeader>
+                    <div className="flex justify-between items-center">
+                      <CardTitle>{form.title}</CardTitle>
+                      <KebabMenu
+                        onEdit={() => window.location.href = `/edit-form/${form._id}`}
+                        onDelete={() => deleteForm(form._id)}
+                      />
+                    </div>
+                    <CardDescription className="dark:text-gray-300">
+                      Last edited: {new Date(form.createdAt).toLocaleDateString()}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground dark:text-gray-400">
+                      Questions: {form?.questions?.length}
+                    </p>
+                  </CardContent>
+                  <CardFooter className="flex justify-between">
+                    <Button variant="outline" size="sm" onClick={() => copyLink(form?._id)}>
+                      <Copy className="mr-2 h-4 w-4" /> Copy Link
+                    </Button>
+                    <Link to={`/form-responses/${form?._id}`}>
+                      <Button variant="outline" size="sm">
+                        <BarChart2 className="mr-2 h-4 w-4" /> View Responses
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
