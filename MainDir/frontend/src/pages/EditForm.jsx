@@ -297,7 +297,7 @@ export default function EditForm() {
                     </Card>
 
                     <div className="mt-6">
-                        <h2 className="text-xl font-semibold mb-2">Questions</h2>
+                        <h2 className="text-xl font-semibold  mb-2">Questions</h2>
                         {questions.map((question, index) => (
                             <EditQuestionCard
                                 key={index}
