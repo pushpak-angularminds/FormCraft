@@ -9,5 +9,8 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"), // Resolves the '@' alias to the 'src' folder
     },
   },
-  base: '/FormCraft', // Ensure the base path matches your GitHub repository name for deployment
+  base: '/FormCraft/', // Ensure the base path matches your GitHub repository name for deployment
+  build: {
+    outDir: 'MainDir/frontend/dist', // Ensure the build output is inside 'frontend/dist'
+  },
 });
