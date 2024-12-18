@@ -11,12 +11,14 @@ import { Link, useNavigate } from 'react-router-dom'
 
 export default function SignupForm() {
   const { toast } = useToast()
-  const navigate =useNavigate()
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
   })
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -26,25 +28,43 @@ export default function SignupForm() {
     }))
   }
 
+  const validateForm = () => {
+    let errors = {}
+    if (!formData.name.trim()) errors.name = 'Name is required'
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required'
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Email is invalid'
+    }
+    if (!formData.password.trim()) {
+      errors.password = 'Password is required'
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters'
+    }
+    setErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+    if (!validateForm()) return
+
+    setLoading(true)
     try {
-      // This is where you would typically make an API call
-      // For demonstration, we're just logging the data and showing a success message
       console.log('Submitting form data:', formData)
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`, formData);
-      console.log('response', response);
-      // Simulating an API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`, formData)
+      console.log('response', response)
+
       toast({
         title: "Account created.",
         description: "We've created your account for you.",
       })
-      
+
       // Clear the form after successful submission
       setFormData({ name: '', email: '', password: '' })
+
+      // Redirect to the sign-in page
+      navigate('/sign-in')
     } catch (error) {
       console.error('Error submitting form:', error)
       toast({
@@ -52,9 +72,10 @@ export default function SignupForm() {
         description: error?.response?.data?.error || "There was a problem creating your account.",
         variant: "destructive",
       })
+    } finally {
+      setLoading(false)
     }
   }
-
 
   useEffect(() => {
     const userId = localStorage.getItem('userId')
@@ -83,6 +104,7 @@ export default function SignupForm() {
                 onChange={handleChange}
                 required
               />
+              {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -95,6 +117,7 @@ export default function SignupForm() {
                 onChange={handleChange}
                 required
               />
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -107,10 +130,13 @@ export default function SignupForm() {
                 onChange={handleChange}
                 required
               />
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full">Sign Up</Button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Signing Up...' : 'Sign Up'}
+            </Button>
             <div className="text-sm text-center">
               Already have an account? <Link to="/sign-in" className="text-blue-600 hover:underline">Sign In</Link>
             </div>
@@ -120,4 +146,3 @@ export default function SignupForm() {
     </div>
   )
 }
-

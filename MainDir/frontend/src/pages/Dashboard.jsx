@@ -23,7 +23,7 @@ const Dashboard = () => {
       } catch (error) {
         console.log(error);
         toast({
-          title: "Error",
+          title: "Notification : ",
           description: error?.response?.data?.error || "Failed to fetch user forms.",
           variant: "destructive",
         });

@@ -16,6 +16,8 @@ export default function SignInForm() {
     email: '',
     password: '',
   })
+  const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -25,30 +27,52 @@ export default function SignInForm() {
     }))
   }
 
+  const validateForm = () => {
+    let errors = {}
+    if (!formData.email.trim()) {
+      errors.email = 'Email is required'
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Email is invalid'
+    }
+    if (!formData.password.trim()) {
+      errors.password = 'Password is required'
+    }
+    setErrors(errors)
+    return Object.keys(errors).length === 0
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (!validateForm()) return
+
+    setLoading(true)
     try {
       console.log('Submitting form data:', formData)
       const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/sign-in`, formData)
       console.log('response', response)
+      
       if (response.status === 200) {
-        navigate(`/user-forms/${response?.data?.user?._id}`);
         localStorage.setItem('userId', response?.data?.user?._id)
-      }
-      toast({
-        title: "Sign-In Successful. ",
-        description: "You are now logged in.",
-      })
+        toast({
+          title: "Sign-In Successful",
+          description: "You are now logged in.",
+        })
 
+        // Redirect to the user dashboard
+        navigate(`/user-forms/${response?.data?.user?._id}`)
+      }
+      
       // Clear the form after successful submission (if needed)
       setFormData({ email: '', password: '' })
     } catch (error) {
       console.error('Error during sign-in:', error)
       toast({
         title: "Error",
-        description: "Invalid email or password.",
+        description: error?.response?.data?.error || "Invalid email or password.",
         variant: "destructive",
       })
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -79,6 +103,7 @@ export default function SignInForm() {
                 onChange={handleChange}
                 required
               />
+              {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
@@ -91,12 +116,15 @@ export default function SignInForm() {
                 onChange={handleChange}
                 required
               />
+              {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full">Sign In</Button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Signing In...' : 'Sign In'}
+            </Button>
             <div className="text-sm text-center">
-              Don't have an account? <Link to="/sign-up" className="text-blue-600 hover:underline">Sign up</Link>
+              Don't have an account? <Link to="/sign-up" className="text-blue-600 hover:underline">Sign Up</Link>
             </div>
           </CardFooter>
         </form>
@@ -104,4 +132,3 @@ export default function SignInForm() {
     </div>
   )
 }
-

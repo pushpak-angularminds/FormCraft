@@ -71,7 +71,7 @@ router.get(`/user-forms/:userId`, async (req, res) => {
     const id = new mongoose.Types.ObjectId(userId)
     const forms = await Form.find({ adminId: id });
     if (!forms || forms.length === 0) {
-      return res.status(400).json({ success: false, error: 'No forms found for this user' });
+      return res.status(400).json({ success: false, error: 'You dont have any form! Please go ahead and create form' });
     }
     console.log('form', forms)
     res.status(200).json({
